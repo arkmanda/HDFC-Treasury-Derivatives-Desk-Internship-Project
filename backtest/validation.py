@@ -20,8 +20,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from ..backend import montecarlo as mc
-from ..backend.pricer import ProductSpec, MarketSnapshot, price
+from backend import montecarlo as mc
+from backend.pricer import ProductSpec, MarketSnapshot, price
 
 
 def classify_regime(atm, rr25):

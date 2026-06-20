@@ -14,10 +14,10 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from ..backend.curves import YieldCurve, tenor_to_years, TENOR_ORDER
-from ..backend.delta import DeltaConvention
-from ..backend.vol_surface import SmileQuotes, build_slice
-from ..backend.pricer import MarketSnapshot
+from backend.curves import YieldCurve, tenor_to_years, TENOR_ORDER
+from backend.delta import DeltaConvention
+from backend.vol_surface import SmileQuotes, build_slice
+from backend.pricer import MarketSnapshot
 
 
 class MarketData:
