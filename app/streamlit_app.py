@@ -143,7 +143,7 @@ def load_md(path: str) -> MarketData:
     return MarketData(load_records(pd.read_csv(path)))
 
 
-DATA_PATH = os.path.join(_ROOT, "project", "data", "sample_market_data.csv")
+DATA_PATH = os.path.join(_ROOT, "data", "sample_market_data.csv")
 have_data = os.path.exists(DATA_PATH)
 md = load_md(DATA_PATH) if have_data else None
 
