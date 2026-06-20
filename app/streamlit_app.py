@@ -19,9 +19,9 @@ from __future__ import annotations
 import os
 import sys
 
-# --- make the `project` package importable when run via `streamlit run` -------
+# --- make the package importable when run via `streamlit run` -------
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ROOT = os.path.abspath(os.path.join(_HERE, "..", ".."))
+_ROOT = os.path.abspath(os.path.join(_HERE, ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
@@ -30,14 +30,14 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from project.backend.delta import DeltaConvention
-from project.backend.vol_surface import SmileQuotes, build_slice
-from project.backend.pricer import price, ProductSpec, MarketSnapshot
-from project.backend.curves import TENOR_ORDER, tenor_to_years
-from project.pipeline.ingestion import load_records
-from project.pipeline.processing import MarketData
-from project.backtest.pnl import run_backtest
-from project.backtest.validation import validate_barrier_grid
+from backend.delta import DeltaConvention
+from backend.vol_surface import SmileQuotes, build_slice
+from backend.pricer import price, ProductSpec, MarketSnapshot
+from backend.curves import TENOR_ORDER, tenor_to_years
+from pipeline.ingestion import load_records
+from pipeline.processing import MarketData
+from backtest.pnl import run_backtest
+from backtest.validation import validate_barrier_grid
 
 # ============================================================================
 # THEME  (mandated palette)
