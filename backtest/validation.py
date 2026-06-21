@@ -57,8 +57,10 @@ def validate_barrier_grid(base: MarketSnapshot, spec: ProductSpec,
                              touch_settle=spec.touch_settle)
             res = price(sp, snap)
             if spec.product in ("one_touch", "no_touch"):
+                # Use flat ATM vol for MC so the error reflects the smile
+                # correction (VV uses barrier vol; MC uses ATM vol baseline).
                 mcr = mc.price_touch_mc(base.S, H, T, base.rd, base.rf,
-                                        res.slice_.vol(H) if res.slice_ else base.quotes.atm,
+                                        base.quotes.atm,
                                         sp.payout, spec.product == "one_touch",
                                         sp.touch_settle, mc_paths)
             else:
@@ -75,11 +77,14 @@ def validate_barrier_grid(base: MarketSnapshot, spec: ProductSpec,
                 regime=classify_regime(base.quotes.atm, base.quotes.rr25),
                 reliable=res.reliable))
     tab = pd.DataFrame(rows)
+    def _safe_corr(a, b):
+        v = a.corr(b)
+        return float(v) if v == v else 0.0  # replace NaN with 0
     summary = dict(
         mean_abs_error=float(tab["abs_error"].mean()),
         max_abs_error=float(tab["abs_error"].max()),
-        err_corr_with_proximity=float(tab["abs_error"].corr(tab["barrier_dist_sigma"])),
-        err_corr_with_T=float(tab["abs_error"].corr(tab["T"])),
+        err_corr_with_proximity=_safe_corr(tab["abs_error"], tab["barrier_dist_sigma"]),
+        err_corr_with_T=_safe_corr(tab["abs_error"], tab["T"]),
         worst_case=tab.loc[tab["abs_error"].idxmax(),
                            ["T", "barrier", "barrier_dist_sigma"]].to_dict(),
     )

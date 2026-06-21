@@ -110,12 +110,15 @@ st.markdown(f"""
         background:{BG1} !important; border-color:{GRID} !important; }}
   div[data-baseweb="popover"] li,
   ul[data-baseweb="menu"] li,
-  li[role="option"], div[role="option"],
-  li[role="option"] *, div[role="option"] * {{
+  li[role="option"], div[role="option"] {{
         color:{TXT0} !important; -webkit-text-fill-color:{TXT0} !important;
-        background-color:transparent !important; }}
+        background-color:{BG1} !important; }}
+  li[role="option"] *, div[role="option"] * {{
+        color:{TXT0} !important; -webkit-text-fill-color:{TXT0} !important; }}
   li[role="option"]:hover, div[role="option"]:hover,
-  li[aria-selected="true"], div[aria-selected="true"] {{
+  li[role="option"]:hover *, div[role="option"]:hover *,
+  li[aria-selected="true"], div[aria-selected="true"],
+  li[aria-selected="true"] *, div[aria-selected="true"] * {{
         background-color:{GRID} !important; }}
   /* radio (call/put) + toggle labels */
   .stRadio label, .stCheckbox label, [data-testid="stWidgetLabel"] * {{
