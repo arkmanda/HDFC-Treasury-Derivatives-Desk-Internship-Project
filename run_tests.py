@@ -24,18 +24,18 @@ if _ROOT not in sys.path:
 import numpy as np
 import pandas as pd
 
-from project.backend import blackscholes as bs
-from project.backend.delta import DeltaConvention, delta, strike_from_delta, atm_strike
-from project.backend.curves import YieldCurve, tenor_to_years
-from project.backend.vol_surface import SmileQuotes, build_slice
-from project.backend import barrier as bar
-from project.backend import touch as tch
-from project.backend import pde
-from project.backend import montecarlo as mc
-from project.backend import vv_engine as vv
-from project.backend.pricer import price, ProductSpec, MarketSnapshot
-from project.pipeline.ingestion import load_records
-from project.pipeline.processing import MarketData
+from backend import blackscholes as bs
+from backend.delta import DeltaConvention, delta, strike_from_delta, atm_strike
+from backend.curves import YieldCurve, tenor_to_years
+from backend.vol_surface import SmileQuotes, build_slice
+from backend import barrier as bar
+from backend import touch as tch
+from backend import pde
+from backend import montecarlo as mc
+from backend import vv_engine as vv
+from backend.pricer import price, ProductSpec, MarketSnapshot
+from pipeline.ingestion import load_records
+from pipeline.processing import MarketData
 
 PASS, FAIL = "  ✓ PASS", "  ✗ FAIL"
 _results: list[tuple[str, bool, str]] = []

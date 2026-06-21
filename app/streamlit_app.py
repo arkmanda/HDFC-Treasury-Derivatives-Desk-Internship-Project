@@ -30,14 +30,14 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from project.backend.delta import DeltaConvention
-from project.backend.vol_surface import SmileQuotes, build_slice
-from project.backend.pricer import price, ProductSpec, MarketSnapshot
-from project.backend.curves import TENOR_ORDER, tenor_to_years
-from project.pipeline.ingestion import load_records
-from project.pipeline.processing import MarketData
-from project.backtest.pnl import run_backtest
-from project.backtest.validation import validate_barrier_grid
+from backend.delta import DeltaConvention
+from backend.vol_surface import SmileQuotes, build_slice
+from backend.pricer import price, ProductSpec, MarketSnapshot
+from backend.curves import TENOR_ORDER, tenor_to_years
+from pipeline.ingestion import load_records
+from pipeline.processing import MarketData
+from backtest.pnl import run_backtest
+from backtest.validation import validate_barrier_grid
 
 # ============================================================================
 # THEME  (mandated palette)
@@ -152,7 +152,7 @@ def load_md(path: str) -> MarketData:
     return MarketData(load_records(pd.read_csv(path)))
 
 
-DATA_PATH = os.path.join(_ROOT, "project", "data", "sample_market_data.csv")
+DATA_PATH = os.path.join(_ROOT, "data", "sample_market_data.csv")
 have_data = os.path.exists(DATA_PATH)
 md = load_md(DATA_PATH) if have_data else None
 

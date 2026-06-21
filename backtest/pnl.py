@@ -15,10 +15,10 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from ..backend.delta import DeltaConvention
-from ..backend.pricer import ProductSpec, price
-from ..pipeline.processing import MarketData
-from ..backend.curves import tenor_to_years
+from backend.delta import DeltaConvention
+from backend.pricer import ProductSpec, price
+from pipeline.processing import MarketData
+from backend.curves import tenor_to_years
 
 
 @dataclass
@@ -112,7 +112,7 @@ def run_backtest(md: MarketData, spec: ProductSpec, tenor: str,
 
 if __name__ == "__main__":
     import io
-    from ..pipeline.ingestion import load_records
+    from pipeline.ingestion import load_records
     # synthetic 10-day path drifting toward an up-barrier at 85
     dates = pd.bdate_range("2024-01-01", periods=10)
     spots = np.linspace(83.0, 85.5, 10)

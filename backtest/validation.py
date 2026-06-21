@@ -20,8 +20,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from ..backend import montecarlo as mc
-from ..backend.pricer import ProductSpec, MarketSnapshot, price
+from backend import montecarlo as mc
+from backend.pricer import ProductSpec, MarketSnapshot, price
 
 
 def classify_regime(atm, rr25):
@@ -87,8 +87,8 @@ def validate_barrier_grid(base: MarketSnapshot, spec: ProductSpec,
 
 
 if __name__ == "__main__":
-    from ..backend.vol_surface import SmileQuotes
-    from ..backend.delta import DeltaConvention
+    from backend.vol_surface import SmileQuotes
+    from backend.delta import DeltaConvention
     q = SmileQuotes(atm=0.09, rr25=0.02, bf25=0.004)
     base = MarketSnapshot(83.0, 0.5, 0.065, 0.045, q,
                           DeltaConvention("spot", True, "delta_neutral"))
