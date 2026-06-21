@@ -19,9 +19,9 @@ from __future__ import annotations
 import os
 import sys
 
-# --- make the `project` package importable when run via `streamlit run` -------
+# --- make the package importable when run via `streamlit run` -------
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ROOT = os.path.abspath(os.path.join(_HERE, "..", ".."))
+_ROOT = os.path.abspath(os.path.join(_HERE, ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
