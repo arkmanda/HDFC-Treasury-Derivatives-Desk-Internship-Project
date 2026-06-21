@@ -20,7 +20,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from backend.curves import TENOR_ORDER
+from ..backend.curves import TENOR_ORDER
 
 REQUIRED = ["date", "tenor", "spot", "rd", "rf", "atm", "rr25", "bf25"]
 OPTIONAL = ["rr10", "bf10"]

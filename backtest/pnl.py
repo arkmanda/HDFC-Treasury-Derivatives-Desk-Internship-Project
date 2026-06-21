@@ -15,10 +15,10 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from backend.delta import DeltaConvention
-from backend.pricer import ProductSpec, price
-from pipeline.processing import MarketData
-from backend.curves import tenor_to_years
+from ..backend.delta import DeltaConvention
+from ..backend.pricer import ProductSpec, price
+from ..pipeline.processing import MarketData
+from ..backend.curves import tenor_to_years
 
 
 @dataclass

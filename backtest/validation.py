@@ -20,8 +20,8 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-from backend import montecarlo as mc
-from backend.pricer import ProductSpec, MarketSnapshot, price
+from ..backend import montecarlo as mc
+from ..backend.pricer import ProductSpec, MarketSnapshot, price
 
 
 def classify_regime(atm, rr25):
@@ -58,7 +58,7 @@ def validate_barrier_grid(base: MarketSnapshot, spec: ProductSpec,
             res = price(sp, snap)
             if spec.product in ("one_touch", "no_touch"):
                 mcr = mc.price_touch_mc(base.S, H, T, base.rd, base.rf,
-                                        snap.slice_.vol(H) if res.slice_ else base.quotes.atm,
+                                        res.slice_.vol(H) if res.slice_ else base.quotes.atm,
                                         sp.payout, spec.product == "one_touch",
                                         sp.touch_settle, mc_paths)
             else:

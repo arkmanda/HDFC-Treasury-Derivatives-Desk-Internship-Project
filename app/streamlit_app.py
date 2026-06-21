@@ -19,9 +19,9 @@ from __future__ import annotations
 import os
 import sys
 
-# --- make the package importable when run via `streamlit run` -------
+# --- make the `project` package importable when run via `streamlit run` -------
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_ROOT = os.path.abspath(os.path.join(_HERE, ".."))
+_ROOT = os.path.abspath(os.path.join(_HERE, "..", ".."))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
@@ -30,14 +30,14 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from backend.delta import DeltaConvention
-from backend.vol_surface import SmileQuotes, build_slice
-from backend.pricer import price, ProductSpec, MarketSnapshot
-from backend.curves import TENOR_ORDER, tenor_to_years
-from pipeline.ingestion import load_records
-from pipeline.processing import MarketData
-from backtest.pnl import run_backtest
-from backtest.validation import validate_barrier_grid
+from project.backend.delta import DeltaConvention
+from project.backend.vol_surface import SmileQuotes, build_slice
+from project.backend.pricer import price, ProductSpec, MarketSnapshot
+from project.backend.curves import TENOR_ORDER, tenor_to_years
+from project.pipeline.ingestion import load_records
+from project.pipeline.processing import MarketData
+from project.backtest.pnl import run_backtest
+from project.backtest.validation import validate_barrier_grid
 
 # ============================================================================
 # THEME  (mandated palette)
@@ -99,15 +99,24 @@ st.markdown(f"""
   .stNumberInput button {{ background:{BG1} !important; color:{TXT0} !important;
         border:1px solid {GRID} !important; }}
   .stNumberInput button svg {{ fill:{TXT0} !important; }}
-  /* dropdown popover menu (renders in a portal, outside the sidebar) */
+  /* dropdown popover menu (renders in a portal). Cover every BaseWeb shell:
+     force the whole popover dark and ALL option text bright, since BaseWeb
+     otherwise paints the menu on a white background with light text. */
+  div[data-baseweb="popover"],
+  div[data-baseweb="popover"] > div,
   div[data-baseweb="popover"] div[role="listbox"],
-  ul[data-baseweb="menu"] {{ background:{BG1} !important;
-        border:1px solid {GRID} !important; }}
-  div[data-baseweb="popover"] li, ul[data-baseweb="menu"] li,
-  div[role="option"] {{ color:{TXT0} !important;
-        -webkit-text-fill-color:{TXT0} !important; background:transparent !important; }}
-  div[role="option"]:hover, li[role="option"]:hover {{
-        background:{GRID} !important; }}
+  div[data-baseweb="menu"], ul[data-baseweb="menu"],
+  ul[role="listbox"], div[role="listbox"] {{
+        background:{BG1} !important; border-color:{GRID} !important; }}
+  div[data-baseweb="popover"] li,
+  ul[data-baseweb="menu"] li,
+  li[role="option"], div[role="option"],
+  li[role="option"] *, div[role="option"] * {{
+        color:{TXT0} !important; -webkit-text-fill-color:{TXT0} !important;
+        background-color:transparent !important; }}
+  li[role="option"]:hover, div[role="option"]:hover,
+  li[aria-selected="true"], div[aria-selected="true"] {{
+        background-color:{GRID} !important; }}
   /* radio (call/put) + toggle labels */
   .stRadio label, .stCheckbox label, [data-testid="stWidgetLabel"] * {{
         color:{TXT0} !important; }}
@@ -143,7 +152,7 @@ def load_md(path: str) -> MarketData:
     return MarketData(load_records(pd.read_csv(path)))
 
 
-DATA_PATH = os.path.join(_ROOT, "data", "sample_market_data.csv")
+DATA_PATH = os.path.join(_ROOT, "project", "data", "sample_market_data.csv")
 have_data = os.path.exists(DATA_PATH)
 md = load_md(DATA_PATH) if have_data else None
 
