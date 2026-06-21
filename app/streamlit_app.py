@@ -99,6 +99,15 @@ st.markdown(f"""
   .stNumberInput button {{ background:{BG1} !important; color:{TXT0} !important;
         border:1px solid {GRID} !important; }}
   .stNumberInput button svg {{ fill:{TXT0} !important; }}
+  /* action buttons (e.g. Run MC validation grid): dark field, red label */
+  .stButton > button, .stDownloadButton > button {{
+        background:{CARD} !important; border:1px solid {RED} !important;
+        border-radius:6px !important; font-weight:700 !important; }}
+  .stButton > button p, .stButton > button div, .stButton > button span,
+  .stButton > button {{ color:{RED} !important;
+        -webkit-text-fill-color:{RED} !important; }}
+  .stButton > button:hover {{ background:rgba(239,68,68,.14) !important;
+        border-color:{RED} !important; }}
   /* dropdown popover menu (renders in a portal). Cover every BaseWeb shell:
      force the whole popover dark and ALL option text bright, since BaseWeb
      otherwise paints the menu on a white background with light text. */
