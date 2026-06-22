@@ -190,8 +190,15 @@ with st.sidebar:
     st.markdown('<div class="blk">Market date & tenor</div>', unsafe_allow_html=True)
     if have_data:
         dates = [d.date().isoformat() for d in md.dates]
-        date_sel = st.select_slider("Date", dates, value=dates[len(dates) // 2])
-        date_idx = dates.index(date_sel)
+        if len(dates) > 1:
+            date_sel = st.select_slider("Date", dates, value=dates[len(dates) // 2])
+            date_idx = dates.index(date_sel)
+        else:
+            # a single-date dataset has no range for the slider widget
+            date_sel, date_idx = dates[0], 0
+            st.markdown(f"<div style='color:{TXT0};font-weight:700'>{date_sel}</div>"
+                        "<div class='blk'>single snapshot — backtest needs ≥2 dates</div>",
+                        unsafe_allow_html=True)
         date_key = md.dates[date_idx]
     else:
         date_sel, date_key = "(manual)", None
