@@ -36,11 +36,21 @@ from dataclasses import dataclass
 
 import numpy as np
 from scipy.optimize import brentq
-
-from . import blackscholes as bs
-from .blackscholes import norm
+from scipy.stats import norm
 
 
+# ── tiny helpers (replaces the deleted blackscholes module) ──────────────────
+def _d1_d2(S, K, T, rd, rf, sigma):
+    vsqrt = sigma * math.sqrt(T)
+    d1 = (math.log(S / K) + (rd - rf + 0.5 * sigma * sigma) * T) / vsqrt
+    return d1, d1 - vsqrt
+
+
+def _forward(S, T, rd, rf):
+    return S * math.exp((rd - rf) * T)
+
+
+# ── public API ───────────────────────────────────────────────────────────────
 @dataclass(frozen=True)
 class DeltaConvention:
     delta_type: str = "spot"          # "spot" | "forward"
@@ -54,8 +64,8 @@ class DeltaConvention:
 
 def delta(S, K, T, rd, rf, sigma, phi, conv: DeltaConvention) -> float:
     """Signed delta under the chosen convention."""
-    d1, d2 = bs.d1_d2(S, K, T, rd, rf, sigma)
-    F = bs.forward(S, T, rd, rf)
+    d1, d2 = _d1_d2(S, K, T, rd, rf, sigma)
+    F = _forward(S, T, rd, rf)
     if not conv.premium_adjusted:
         if conv.delta_type == "spot":
             return phi * math.exp(-rf * T) * norm.cdf(phi * d1)
@@ -66,40 +76,27 @@ def delta(S, K, T, rd, rf, sigma, phi, conv: DeltaConvention) -> float:
         return phi * (K / F) * norm.cdf(phi * d2)
 
 
-# --------------------------------------------------------------------------- #
-# ATM strike                                                                   #
-# --------------------------------------------------------------------------- #
 def atm_strike(S, T, rd, rf, sigma, conv: DeltaConvention) -> float:
-    F = bs.forward(S, T, rd, rf)
+    F = _forward(S, T, rd, rf)
     if conv.atm == "forward":
         return F
-    # delta-neutral straddle
     if not conv.premium_adjusted:
         return F * math.exp(0.5 * sigma * sigma * T)
     return F * math.exp(-0.5 * sigma * sigma * T)
 
 
-# --------------------------------------------------------------------------- #
-# Strike from delta                                                            #
-# --------------------------------------------------------------------------- #
 def _strike_from_delta_unadjusted(S, T, rd, rf, sigma, phi, target_delta, dtype):
-    """Analytic inverse for the unadjusted case. target_delta is the *magnitude*
-    quoted (e.g. 0.25). Returns K."""
     vol = sigma * math.sqrt(T)
     if dtype == "spot":
-        # |delta| = e^{-rf T} N(phi d1)  ->  d1 = phi * N^{-1}(|delta| e^{rf T})
-        arg = target_delta * math.exp(rf * T)
-        arg = min(max(arg, 1e-12), 1 - 1e-12)
+        arg = min(max(target_delta * math.exp(rf * T), 1e-12), 1 - 1e-12)
         d1 = phi * norm.ppf(arg)
     else:
         arg = min(max(target_delta, 1e-12), 1 - 1e-12)
         d1 = phi * norm.ppf(arg)
-    # d1 = (ln(S/K) + (rd-rf+0.5 sig^2)T)/vol  ->  K = S exp(-d1 vol + (rd-rf+0.5sig^2)T)
     return S * math.exp(-d1 * vol + (rd - rf + 0.5 * sigma * sigma) * T)
 
 
 def _delta_vec(S, K, T, rd, rf, sigma, phi, conv: DeltaConvention):
-    """Vectorised signed delta over an array of strikes K (matches delta())."""
     K = np.asarray(K, dtype=float)
     F = S * math.exp((rd - rf) * T)
     vsqrt = sigma * math.sqrt(T)
@@ -115,29 +112,22 @@ def _delta_vec(S, K, T, rd, rf, sigma, phi, conv: DeltaConvention):
 
 
 def strike_from_delta(S, T, rd, rf, sigma, phi, target_delta, conv: DeltaConvention):
-    """Invert |delta| -> strike. target_delta is the positive magnitude (0.25, 0.10).
-
-    For the premium-adjusted call the delta is hump-shaped in K, so we restrict
-    the search to the branch beyond the delta-max strike (the market 25d/10d
-    strike is always on the far, decreasing branch)."""
     if not conv.premium_adjusted:
         return _strike_from_delta_unadjusted(
             S, T, rd, rf, sigma, phi, target_delta, conv.delta_type)
 
-    F = bs.forward(S, T, rd, rf)
+    F = _forward(S, T, rd, rf)
     signed_target = phi * target_delta
 
     def f(K):
         return delta(S, K, T, rd, rf, sigma, phi, conv) - signed_target
 
-    # Vectorised f over a wide log-strike grid, then refine with brentq.
     lo, hi = 1e-6 * F, 10.0 * F
     grid = np.exp(np.linspace(math.log(lo), math.log(hi), 4000))
     vals = _delta_vec(S, grid, T, rd, rf, sigma, phi, conv) - signed_target
 
     if phi > 0:
-        # premium-adj call delta rises then falls; take the far (right) branch.
-        kmax = grid[int(np.argmax(vals + signed_target))]  # ~ delta-max strike
+        kmax = grid[int(np.argmax(vals + signed_target))]
         mask = grid >= kmax
         g, v = grid[mask], vals[mask]
     else:
@@ -145,7 +135,6 @@ def strike_from_delta(S, T, rd, rf, sigma, phi, target_delta, conv: DeltaConvent
 
     sign_change = np.where(np.sign(v[:-1]) != np.sign(v[1:]))[0]
     if len(sign_change) == 0:
-        # fall back to closest point
         return float(g[int(np.argmin(np.abs(v)))])
     i = sign_change[-1] if phi > 0 else sign_change[0]
     return float(brentq(f, g[i], g[i + 1], xtol=1e-10, rtol=1e-12))

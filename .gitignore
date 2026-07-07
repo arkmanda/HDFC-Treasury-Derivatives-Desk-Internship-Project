@@ -1,10 +1,20 @@
+# Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
 .venv/
 venv/
 env/
-.env
-*.egg-info/
-.pytest_cache/
+
+# OS / editor
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Data artifacts (keep the bundled sample)
+*.parquet
+*.sqlite

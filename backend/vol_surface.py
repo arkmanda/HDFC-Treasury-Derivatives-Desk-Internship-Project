@@ -32,7 +32,6 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 from scipy.optimize import least_squares
 
-from . import blackscholes as bs
 from . import delta as dl
 from .delta import DeltaConvention
 
@@ -169,7 +168,7 @@ class VolSurfaceSlice:
 
 def build_slice(S, T, rd, rf, quotes: SmileQuotes, conv: DeltaConvention,
                 method: str = "spline") -> VolSurfaceSlice:
-    F = bs.forward(S, T, rd, rf)
+    F = S * __import__('math').exp((rd - rf) * T)
     pil = pillar_vols(quotes)
     strikes, vols = {}, {}
     for label, dmag, phi, vol in pil:
