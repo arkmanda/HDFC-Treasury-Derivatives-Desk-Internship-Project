@@ -1,0 +1,11 @@
+# Pin the dark base theme so Streamlit Cloud renders identically to local.
+# Without this, Cloud falls back to the light base theme and the BaseWeb
+# widgets (selectbox / number input) paint on a light background, leaving
+# their contents unreadable. Palette mirrors app/streamlit_app.py.
+[theme]
+base = "dark"
+primaryColor = "#3B82F6"
+backgroundColor = "#0B0F14"
+secondaryBackgroundColor = "#121821"
+textColor = "#E6EAF0"
+font = "sans serif"
