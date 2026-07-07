@@ -497,7 +497,22 @@ with center:
                 "Upload a Bloomberg Excel file from the sidebar to populate "
                 "this tab. The bootstrap parses the MIFOR forward curve and "
                 "SOFR rate table, derives the rd/rf term structure, and "
-                "displays the parsed vol surface pillars."
+                "displays the parsed vol surface pillars.\n\n"
+                "**Expected sheet layout** — a *single-day* snapshot with three "
+                "tables side-by-side on one sheet (no header row; data starts "
+                "at row 3, vol table at row 4):\n"
+                "- **Cols A–D · Modified MIFOR** — `term, unit, value, type`: an "
+                "`FX Spot` row (value = spot); `FX Fwd` rows "
+                "(`unit=ACTDATE`, term = expiry `YYYYMMDD`, value = fwd points "
+                "in paise); `Swap` rows (`unit=YR`, term = years, value = rate %).\n"
+                "- **Cols G–K · SOFR (USD rf)** — `term, unit, rate%`, "
+                "`unit ∈ {DY, WK, MO, YR}`.\n"
+                "- **Cols N–X · USD/INR vol surface** — per tenor: `tenor, ATM, "
+                "RR25, BF25, RR10, BF10` in vol %, at cols N, O, Q, S, U, W "
+                "(spread columns between are skipped).\n\n"
+                "Tenors read: 1W, 2W, 1M, 2M, 3M, 6M, 9M, 1Y, 2Y. Keep rates in "
+                "percent, forward points in paise, and one row per tenor so the "
+                "engine bootstraps the curves and prices correctly."
             )
         else:
             d = _bloomberg_diag
