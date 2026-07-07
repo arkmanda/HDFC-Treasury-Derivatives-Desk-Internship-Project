@@ -1,7 +1,11 @@
-# Pin the dark base theme so Streamlit Cloud renders identically to local.
-# Without this, Cloud falls back to the light base theme and the BaseWeb
-# widgets (selectbox / number input) paint on a light background, leaving
-# their contents unreadable. Palette mirrors app/streamlit_app.py.
+# Force a dark appearance for EVERY viewer, regardless of their OS / the
+# System-Light-Dark toggle. Streamlit 1.59 can't disable that toggle, so we
+# make the *light* variant render with the same dark palette as the dark
+# variant -> whichever appearance a viewer's system resolves to, they see dark.
+# Palette mirrors app/streamlit_app.py.
+#
+# NOTE: Streamlit Cloud reads this file only at server startup. After pushing,
+# reboot the app (Manage app -> Reboot) for changes to take effect.
 [theme]
 base = "dark"
 primaryColor = "#3B82F6"
@@ -9,3 +13,15 @@ backgroundColor = "#0B0F14"
 secondaryBackgroundColor = "#121821"
 textColor = "#E6EAF0"
 font = "sans serif"
+
+[theme.light]
+primaryColor = "#3B82F6"
+backgroundColor = "#0B0F14"
+secondaryBackgroundColor = "#121821"
+textColor = "#E6EAF0"
+
+[theme.dark]
+primaryColor = "#3B82F6"
+backgroundColor = "#0B0F14"
+secondaryBackgroundColor = "#121821"
+textColor = "#E6EAF0"
