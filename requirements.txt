@@ -1,0 +1,10 @@
+# FX Barrier & Touch — Vanna-Volga pricing/analytics stack
+# Tested with the versions in the right column; the >= bounds are the
+# practical minimums (numpy 2.x and pandas 2.x+ are required).
+numpy>=1.26          # tested 2.4.4
+scipy>=1.11          # tested 1.17.1   (uses scipy.special.ndtr/ndtri, optimize.brentq)
+pandas>=2.0          # tested 3.0.2
+plotly>=5.18         # tested 6.8.0    (charts + 3D surface)
+streamlit>=1.32      # tested 1.58.0   (dashboard)
+pyarrow>=14.0        # tested 24.0.0   (parquet ingestion)
+openpyxl>=3.1        # tested 3.1.5    (Bloomberg Excel bootstrap)
